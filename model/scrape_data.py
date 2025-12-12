@@ -13,6 +13,7 @@ def scrape_data(team, year):
 
     # Remove Extranious Rows
     df = df[df[('Unnamed: 0_level_0', 'Rk')] != 'Rk']
+    df = df[~df[('Unnamed: 1_level_0', 'Gtm')].isna()]
 
     # Extract neccessary data
     formatted_df = pd.DataFrame({
@@ -55,17 +56,27 @@ def scrape_data(team, year):
     return formatted_df
 
 def main():
-    team_list = pd.read_json('data/team_list.json')
+    team_list = pd.read_json('data/master_team_list.json', orient='values')
+    team_list = team_list[0]
 
     main_df = pd.DataFrame()
     for i, team in enumerate(team_list, start=1):
-        df = scrape_data(team, 2025)
+        print(team)
+
+        try:
+            df = scrape_data(team, 2026)
+        except Exception as e:
+            print(f"ERROR {team} : {e}")
+            time.sleep(random.uniform(3, 5))
+            continue
+        
         main_df = pd.concat([main_df, df])
         print(f"{i}/{len(team_list)}")
-        time.sleep(random.uniform(1, 3))
+        time.sleep(random.uniform(3, 5))
 
 
-    main_df.to_csv(f"master_df_{datetime.datetime.month}_{datetime.datetime.day}_{datetime.datetime.year}.csv")
+    today = datetime.datetime.now()
+    main_df.to_csv(f"master_df.csv")
 
 if __name__ == "__main__":
     main()

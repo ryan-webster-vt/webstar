@@ -1,6 +1,7 @@
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from clean_names import clean_names
 
 def retrieve_team_list():
     # Read Data
@@ -9,11 +10,12 @@ def retrieve_team_list():
     df = tables[0]
 
     # Remove header rows, return series of schools
-    df = df[(df[('Unnamed: 0_level_0', 'Rk')] != 'Rk') & (~df[('Unnamed: 0_level_0', 'Rk')].isna())]
-    return(df[('Unnamed: 1_level_0', 'School')].str.lower().str.replace(" ", "-").str.replace("&", "").str.replace("(", "")).str.replace(")", "")
+    schools = df[(df[('Unnamed: 0_level_0', 'Rk')] != 'Rk') & (~df[('Unnamed: 0_level_0', 'Rk')].isna())][('Unnamed: 1_level_0', 'School')]
+    schools = clean_names(schools)
+    return schools
 
 def main():
-    retrieve_team_list().to_json("data/team_list.json")
+    pd.Series(retrieve_team_list().tolist()).to_json('data/master_team_list.json', orient = 'records')
 
 if __name__ == "__main__":
     main()
