@@ -1,5 +1,3 @@
-import pandas
-
 def clean_names(schools):
     schools = (
     schools.str.lower()

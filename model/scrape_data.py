@@ -1,12 +1,10 @@
 import pandas as pd
-import requests
 import time
 import random
 import datetime
-from clean_names import clean_names
+import os
 
-
-def scrape_data(team, year):
+def scrape_data(team: str, year: int):
     """
     Scrape and format NCAA men's basketball game logs for a given team and season.
 
@@ -77,6 +75,7 @@ def scrape_data(team, year):
     return formatted_df
 
 def main():
+    print(os.getcwd())
     team_list = pd.read_json('data/master_team_list.json', orient='values')
     team_list = team_list[0]
 
@@ -96,10 +95,10 @@ def main():
         time.sleep(random.uniform(3, 5))
 
     # Remove non-division one matchups
-    df['team'] = df[df['team'].isin(team_list)]
+    main_df = main_df[main_df['team'].isin(team_list)]
 
     today = datetime.datetime.now()
-    main_df.to_csv(f"master_df.csv")
+    main_df.to_csv("data/master_df.csv", index=False)
 
 if __name__ == "__main__":
     main()

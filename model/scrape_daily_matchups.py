@@ -1,9 +1,5 @@
 import pandas as pd
 import datetime
-import requests
-from bs4 import BeautifulSoup
-import time
-import random
 
 def get_schedule(month, day, year):
     # Read data
@@ -11,7 +7,6 @@ def get_schedule(month, day, year):
     tables = pd.read_html(url)
     df = tables[30]
     print(df)
-
 
 def main():
     today = datetime.datetime.now()

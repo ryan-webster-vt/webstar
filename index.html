@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WEBSTAR Ratings</title>
+  <style>
+    th {
+      cursor: pointer;
+      background-color: #f0f0f0;
+    }
+    th:hover {
+      background-color: #d0d0d0;
+    }
+  </style>
+</head>
+<body>
+
+<h2>WEBSTAR Ratings</h2>
+<table id="csvTable" border="1">
+  <!-- Table will be populated here -->
+</table>
+
+<script>
+  const csvUrl = 'https://webstar-bucket.s3.us-east-1.amazonaws.com/current_rankings.csv';
+
+  fetch(csvUrl)
+    .then(response => response.text())
+    .then(text => {
+      const rows = text.trim().split('\n').map(row => row.split(','));
+      const table = document.getElementById('csvTable');
+      table.innerHTML = '';
+
+      // Create table header
+      const headerRow = document.createElement('tr');
+      rows[0].forEach((cell, colIndex) => {
+        const th = document.createElement('th');
+        th.textContent = cell;
+        th.addEventListener('click', () => sortTable(table, colIndex));
+        headerRow.appendChild(th);
+      });
+      table.appendChild(headerRow);
+
+      // Create table body
+      rows.slice(1).forEach(row => {
+        const tr = document.createElement('tr');
+        row.forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching CSV:', error);
+    });
+
+  function sortTable(table, colIndex) {
+    const rowsArray = Array.from(table.rows).slice(1); // exclude header
+    const isNumeric = !isNaN(rowsArray[0].cells[colIndex].textContent);
+
+    rowsArray.sort((a, b) => {
+      let aText = a.cells[colIndex].textContent;
+      let bText = b.cells[colIndex].textContent;
+
+      if (isNumeric) {
+        return parseFloat(aText) - parseFloat(bText);
+      } else {
+        return aText.localeCompare(bText);
+      }
+    });
+
+    // Toggle descending if already sorted
+    if (table.sortedCol === colIndex) {
+      rowsArray.reverse();
+      table.sortedCol = null;
+    } else {
+      table.sortedCol = colIndex;
+    }
+
+    // Append sorted rows
+    rowsArray.forEach(row => table.appendChild(row));
+  }
+</script>
+
+</body>
+</html>

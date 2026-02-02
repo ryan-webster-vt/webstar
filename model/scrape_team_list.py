@@ -1,6 +1,4 @@
 import pandas as pd
-import requests
-from bs4 import BeautifulSoup
 from clean_names import clean_names
 
 def retrieve_team_list():
