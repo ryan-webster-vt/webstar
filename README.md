@@ -1,4 +1,4 @@
-# WEBSTAR Rankings
+# WebSTAR Rankings
 
 Live Rankings: https://webstar-bucket.s3.us-east-1.amazonaws.com/index.html
 
