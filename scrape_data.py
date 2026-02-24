@@ -80,6 +80,7 @@ def main():
     team_list = team_list[0]
 
     main_df = pd.DataFrame()
+
     for i, team in enumerate(team_list, start=1):
         print(team)
 

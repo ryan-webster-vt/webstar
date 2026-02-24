@@ -95,11 +95,13 @@ def_df = pd.DataFrame({
 
 rankings = off_df.merge(def_df, on="Team", how="left")
 
+# Add Rank
 rankings['Total'] = rankings['AdjOffEff'] - rankings['AdjDefEff']
 rankings = rankings.sort_values('Total', ascending=False)
 rankings['Rank'] = range(1, len(rankings) + 1)
-eastern = ZoneInfo("America/New_York")
 
+# Add Date
+eastern = ZoneInfo("America/New_York")
 rankings['Date'] = datetime.now(tz=eastern).date()
 
 print(rankings)
@@ -108,9 +110,7 @@ print(rankings)
 rankings['Team'] = rankings['Team'].str.title()
 rankings['Team'] = rankings['Team'].str.replace('-', ' ')
 rankings = rankings[['Rank', 'Team', 'Total', 'AdjOffEff', 'AdjDefEff', 'Date']]
-rankings['Total'] = round(rankings['Total'] * 100, 4)
-rankings['AdjOffEff'] = round(rankings['AdjOffEff'] * 100, 4)
-rankings['AdjDefEff'] = round(rankings['AdjDefEff'] * 100, 4)
+rankings[['Total', 'AdjOffEff', 'AdjDefEff']] = (rankings[['Total', 'AdjOffEff', 'AdjDefEff']] * 100).round(2)
 
 # Concat to current rankings
 current_rankings = pd.read_csv('data/current_rankings.csv')
