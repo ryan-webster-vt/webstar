@@ -2,7 +2,7 @@ import pandas as pd
 import pymc as pm
 import arviz as az
 import numpy as np
-from clean_names import clean_names, clean_opponent_names
+from clean_names import clean_names, clean_opponent_names, display_names
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -107,6 +107,8 @@ print(rankings)
 # Making the data table pretty
 rankings['Team'] = rankings['Team'].str.title()
 rankings['Team'] = rankings['Team'].str.replace('-', ' ')
+rankings['Team'] = display_names(rankings['Team'])
+
 rankings = rankings[['Rank', 'Team', 'Total', 'AdjOffEff', 'AdjDefEff', 'Date']]
 rankings['Total'] = round(rankings['Total'] * 100, 4)
 rankings['AdjOffEff'] = round(rankings['AdjOffEff'] * 100, 4)
