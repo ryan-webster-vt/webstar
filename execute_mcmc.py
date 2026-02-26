@@ -6,11 +6,21 @@ from clean_names import clean_names, clean_opponent_names, display_names
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+# Read Data
 df = pd.read_csv('data/master_df.csv')
 
 team_list = pd.read_json('data/master_team_list.json', orient='values')
 team_list = team_list[0]
 
+# Create Win/Loss table
+df['result'] = np.where(df['points_team'] > df['points_opponent'], 'W', 'L')
+records = (
+    df.groupby('team')['result']
+      .value_counts()
+      .unstack(fill_value=0)
+)
+
+# Little more cleaning
 df = df[~df['opponent'].isna()]
 df['opponent'] = clean_opponent_names(df['opponent'])
 df = df[df['opponent'].isin(team_list)]
@@ -94,6 +104,7 @@ def_df = pd.DataFrame({
 })
 
 rankings = off_df.merge(def_df, on="Team", how="left")
+rankings = rankings.merge(records, left_on='Team', right_on='team')
 
 # Add Rank
 rankings['Total'] = rankings['AdjOffEff'] - rankings['AdjDefEff']
@@ -111,7 +122,7 @@ rankings['Team'] = rankings['Team'].str.title()
 rankings['Team'] = rankings['Team'].str.replace('-', ' ')
 rankings['Team'] = display_names(rankings['Team'])
 
-rankings = rankings[['Rank', 'Team', 'Total', 'AdjOffEff', 'AdjDefEff', 'Date']]
+rankings = rankings[['Rank', 'Team', 'Total', 'W', 'L', 'AdjOffEff', 'AdjDefEff', 'Date']]
 rankings[['Total', 'AdjOffEff', 'AdjDefEff']] = (rankings[['Total', 'AdjOffEff', 'AdjDefEff']] * 100).round(2)
 
 # Concat to current rankings

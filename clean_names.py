@@ -127,7 +127,7 @@ def display_names(schools):
         'Brigham Young' : 'BYU',
         'Saint Louis' : 'St. Louis',
         'Saint Marys Ca' : 'St. Mary\'s (CA)',
-        'Saint Johns Ny' : 'St. John\'s',
+        'St Johns Ny' : 'St. John\'s',
         'North Carolina State' : 'NC State',
         'North Carolina' : 'UNC',
         'Southern Methodist' : 'SMU',
