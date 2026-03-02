@@ -4,12 +4,17 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
 import boto3
 import io
+from zoneinfo import ZoneInfo
 
 def retrieve_game(game_id: int):
-    _, boxscore_df, info_df = s.get_game(game_id=game_id, pbp=False, info=True)
+    """
+    Returns boxscore_df and info_df for a single game.
+    """
+    info_df, boxscore_df, _= s.get_game(game_id=game_id, pbp=False, info=True)
     return boxscore_df, info_df
 
 def compute_possessions(fga, fta, oreb, to):
+    """Estimate possessions for a team."""
     return fga - oreb + to + (0.44 * fta)
 
 def scrape_data(days_ago=1):
@@ -17,7 +22,7 @@ def scrape_data(days_ago=1):
     Scrapes all games from a given day.
     Returns two lists: boxscores and info dataframes.
     """
-    date = datetime.today() - timedelta(days=days_ago)
+    date = datetime.now(ZoneInfo("America/New_York")) - timedelta(days=days_ago)
     game_ids = s.get_game_ids(date)
 
     if not game_ids:
@@ -42,6 +47,9 @@ def scrape_data(days_ago=1):
                 print(f"Failed to retrieve {gid}: {e}")
 
     print("All games scraped!")
+    boxscores = pd.concat(boxscores, ignore_index=True)
+    info_list = pd.concat(info_list, ignore_index=True)
+
     return boxscores, info_list
 
 def build_matchup_table(boxscores, info_list):
@@ -53,34 +61,44 @@ def build_matchup_table(boxscores, info_list):
     cols = ['game_id', 'team', 'pts', 'fga', 'fta', 'oreb', 'to']
     boxscores = boxscores[cols]
 
-    df_team = boxscores.copy()
-    df_opp  = boxscores.add_prefix('opp_').rename(columns={'opp_game_id': 'game_id', 'opp_team': 'opponent'})
-    result = df_team.merge(df_opp, on='game_id')
-    result = result[result['team'] < result['opponent']].reset_index(drop=True)
+    # Each game has two rows — split into "team" and "opponent" by pairing them
+    df1 = boxscores.iloc[::2].reset_index(drop=True)   # first team in each game
+    df2 = boxscores.iloc[1::2].reset_index(drop=True)  # second team in each game
+
+    # Join side by side
+    merged = pd.concat([
+        df1.rename(columns=lambda c: c if c == 'game_id' else f'team_{c}'),
+        df2.rename(columns=lambda c: f'opp_{c}' if c != 'game_id' else c).drop(columns='game_id')
+    ], axis=1)
+
+    # Create inverse rows (swap team/opp)
+    inverse = merged.rename(columns=lambda c: c.replace('team_', '__tmp__').replace('opp_', 'team_').replace('__tmp__', 'opp_'))
+
+    # Stack original + inverse
+    result = pd.concat([merged, inverse], ignore_index=True).sort_values('game_id').reset_index(drop=True)
 
     result = result.merge(info_list[['game_id', 'home_team', 'is_neutral', 'game_day']], on = 'game_id')
+    result = result.rename(columns={'team_team': 'team'})
+    
     result['neutral'] = result['is_neutral'] == 1
     result['home'] = (~result['neutral']) & (result['home_team'] == result['team'])
     result['away'] = (~result['neutral']) & (result['home_team'] != result['team'])
 
-    result['possession_team'] = compute_possessions(result['fga'], result['fta'], result['oreb'], result['to'])
+    result['possession_team'] = compute_possessions(result['team_fga'], result['team_fta'], result['team_oreb'], result['team_to'])
     result['possession_opp'] = compute_possessions(result['opp_fga'], result['opp_fta'], result['opp_oreb'], result['opp_to'])
 
-    result['ppp_off_team'] = result['pts'] / result['possession_team']
+    result['ppp_off_team'] = result['team_pts']/ result['possession_team']
     result['ppp_def_team'] = result['opp_pts'] / result['possession_opp']
 
-    result['ppp_off_opp'] = result['opp_pts'] / result['possession_opp']
-    result['ppp_def_opp'] = result['pts'] / result['possession_team']
-
-    result = result[['team', 'opponent', 'home', 'neutral', 'away', 'pts', 'opp_pts', 'possession_team', 
-                    'possession_opp', 'ppp_off_team', 'ppp_def_team', 'ppp_off_opp', 'ppp_def_opp', 'game_id', 'game_day']]
+    result['ppp_off_opp'] = result['opp_pts'] / result['possession_opp'] 
+    result['ppp_def_opp'] = result['team_pts'] / result['possession_team']
 
     return result
 
 def main():
     # Open data to concat to from S3
     s3 = boto3.client('s3')
-    obj = s3.get_object(Bucket='webstar-bucket', Key='data/master_df.csv')
+    obj = s3.get_object(Bucket='webstar-bucket', Key='master_df.csv')
     prev_master_df = pd.read_csv(io.BytesIO(obj['Body'].read()))
 
     # Scrape/clean data
@@ -88,10 +106,12 @@ def main():
     matchup_df = build_matchup_table(box_scores, info_list)
 
     # Concat data to existing master file
-    master_df = pd.concat(prev_master_df, matchup_df, ignore_index= True)
+    master_df = pd.concat([prev_master_df, matchup_df], ignore_index= True)
 
     # Save data
     master_df.to_csv('data/master_df.csv', index = False)
+
+    # File gets copied from EC2 to S3 in Bash file:
 
 
 if __name__ == "__main__":
