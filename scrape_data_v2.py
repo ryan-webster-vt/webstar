@@ -108,11 +108,20 @@ def main():
     # Concat data to existing master file
     master_df = pd.concat([prev_master_df, matchup_df], ignore_index= True)
 
-    # Save data
-    master_df.to_csv('data/master_df.csv', index = False)
+    # Removes duplicate data if manually ran on the same day
+    master_df = master_df.drop_duplicates(
+        subset = ['game_id', 'team', 'opp_team'],
+        keep = 'last'
+    ).reset_index(drop=True)
 
-    # File gets copied from EC2 to S3 in Bash file:
-
+    # Save data onto S3
+    csv_buffer = io.StringIO()
+    master_df.to_csv(csv_buffer, index=False)
+    s3.put_object(
+        Bucket = 'webstar-bucket',
+        Key = 'master_df.csv',
+        Body = csv_buffer.getvalue()
+    )
 
 if __name__ == "__main__":
     main()

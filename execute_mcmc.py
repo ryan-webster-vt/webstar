@@ -6,10 +6,14 @@ from clean_names import normalize_team_name
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
+import boto3
+import io
 
 def main():
-    # Load full season data
-    df = pd.read_csv('data/master_df.csv')
+    # Load full season data from S3
+    s3 = boto3.client('s3')
+    obj = s3.get_object(Bucket='webstar-bucket', Key='master_df.csv')
+    df = pd.read_csv(io.BytesIO(obj['Body'].read()))
 
     # Load canonical team list from JSON
     with open('data/ncaa_teams.json', 'r') as f:
