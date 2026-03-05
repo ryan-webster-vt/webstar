@@ -111,7 +111,7 @@ def main():
     # Removes duplicate data if manually ran on the same day
     master_df = master_df.drop_duplicates(
         subset = ['game_id', 'team', 'opp_team'],
-        keep = 'last'
+        keep = 'first'
     ).reset_index(drop=True)
 
     # Save data onto S3

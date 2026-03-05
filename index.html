@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>WEBSTAR Ratings</title>
+  <title>WebStar Analytics</title>
   <style>
     th {
       cursor: pointer;
@@ -11,18 +11,64 @@
     th:hover {
       background-color: #d0d0d0;
     }
+
+    .page-layout {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+    }
+
+    .games-sidebar h3 {
+      margin: 0 0 6px 0;
+      font-size: 1em;
+    }
+
+    /* WP% cell coloring: green = favored, red = underdog */
+    .wp-high {
+      color: #1a7a1a;
+      font-weight: bold;
+    }
+    .wp-low {
+      color: #b30000;
+    }
+
+    /* Neutral site italics applied via JS */
   </style>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
 </head>
 <body>
 
-<h2>WebSTAR Ratings</h2>
+<h2>WebStar Analytics</h2>
 <p id="last-updated" style="font-size: 0.9em; color: #555;">Last updated: —</p>
-<table id="csvTable" border="1">
-  <!-- Table will be populated here -->
-</table>
+
+<div class="page-layout">
+
+  <div>
+    <table id="csvTable" border="1">
+      <!-- Table will be populated here -->
+    </table>
+  </div>
+
+  <div class="games-sidebar">
+    <h3>Today's Games</h3>
+    <table id="gamesTable" border="1">
+      <thead>
+        <tr id="gamesHeader"></tr>
+      </thead>
+      <tbody id="gamesBody">
+        <tr><td colspan="7">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
 
 <script>
-  const csvUrl = 'https://webstar-bucket.s3.us-east-1.amazonaws.com/current_rankings.csv';
+  // ── Rankings table ──────────────────────────────────────────────────────────
+  const csvUrl = 'https://www.webstaranalytics.com/current_rankings.csv';
 
   fetch(`${csvUrl}?t=${Date.now()}`, { cache: 'no-store' })
     .then(response => {
@@ -56,7 +102,6 @@
       const table = document.getElementById('csvTable');
       table.innerHTML = '';
 
-      // Build header, skipping the Date column
       const headerRow = document.createElement('tr');
       header.forEach((cell, colIndex) => {
         if (colIndex === dateColIndex) return;
@@ -67,7 +112,6 @@
       });
       table.appendChild(headerRow);
 
-      // Build filtered rows, skipping the Date column
       filteredRows.forEach(row => {
         const tr = document.createElement('tr');
         row.forEach((cell, colIndex) => {
@@ -81,6 +125,129 @@
     })
     .catch(error => console.error('Error fetching CSV:', error));
 
+  // ── Today's Games table ─────────────────────────────────────────────────────
+  const gamesUrl = 'https://www.webstaranalytics.com/todays_games.csv';
+
+  fetch(`${gamesUrl}?t=${Date.now()}`, { cache: 'no-store' })
+    .then(r => r.text())
+    .then(text => {
+      const tbody = document.getElementById('gamesBody');
+      const thead = document.getElementById('gamesHeader');
+
+      const delimiter = text.includes('\t') ? '\t' : ',';
+      const rows = text.trim().split('\n').map(r => r.split(delimiter).map(c => c.trim()));
+      const header = rows[0];
+      const dataRows = rows.slice(1);
+
+      const col = name => header.findIndex(h => h.toLowerCase() === name.toLowerCase());
+
+      const idxHome    = col('home_team');
+      const idxAway    = col('away_team');
+      const idxNeutral = col('is_neutral');
+      const idxTime    = col('game_time');
+      const idxTV      = col('tv_network');
+      const idxSpread  = col('home_team_spread');
+      const idxHomeWP  = col('home_team_wp');
+      const idxAwayWP  = col('away_team_wp');
+      const idxDate    = col('date');
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayGames = idxDate !== -1
+        ? dataRows.filter(r => normalizeDate(r[idxDate]) === todayStr)
+        : dataRows;
+
+      thead.innerHTML = '';
+      ['Away', 'Home', 'Time', 'TV', 'Spread', 'Away WP%', 'Home WP%'].forEach((label, i) => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        th.addEventListener('click', () => sortTable(document.getElementById('gamesTable'), i));
+        thead.appendChild(th);
+      });
+
+      tbody.innerHTML = '';
+
+      if (todayGames.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">No games today.</td></tr>';
+        return;
+      }
+
+      todayGames.forEach(row => {
+        const homeTeam  = row[idxHome]   || '—';
+        const awayTeam  = row[idxAway]   || '—';
+        const isNeutral = (row[idxNeutral] || '').toLowerCase() === 'true' || row[idxNeutral] === '1';
+        const gameTime  = row[idxTime]   || '—';
+        const tv        = row[idxTV]     || '—';
+        const spread    = row[idxSpread] ? parseFloat(row[idxSpread]) : null;
+        const homeWPRaw = row[idxHomeWP] ? parseFloat(row[idxHomeWP]) : null;
+        const awayWPRaw = row[idxAwayWP] ? parseFloat(row[idxAwayWP]) : null;
+
+        // Values already in %xx.xx form — use directly
+        const homeWP = homeWPRaw;
+        const awayWP = awayWPRaw;
+
+        let spreadText = '—';
+        if (spread !== null) {
+          spreadText = spread > 0 ? `+${spread}` : spread < 0 ? `${spread}` : 'PK';
+        }
+
+        const tr = document.createElement('tr');
+
+        // Away team
+        const tdAway = document.createElement('td');
+        tdAway.textContent = awayTeam;
+        if (isNeutral) tdAway.style.fontStyle = 'italic';
+        tr.appendChild(tdAway);
+
+        // Home team
+        const tdHome = document.createElement('td');
+        tdHome.textContent = homeTeam;
+        if (isNeutral) tdHome.style.fontStyle = 'italic';
+        tr.appendChild(tdHome);
+
+        // Time
+        const tdTime = document.createElement('td');
+        tdTime.textContent = gameTime;
+        tr.appendChild(tdTime);
+
+        // TV
+        const tdTV = document.createElement('td');
+        tdTV.textContent = tv;
+        tr.appendChild(tdTV);
+
+        // Spread (home team perspective)
+        const tdSpread = document.createElement('td');
+        tdSpread.textContent = spreadText;
+        tr.appendChild(tdSpread);
+
+        // Away WP%
+        const tdAwayWP = document.createElement('td');
+        if (awayWP !== null) {
+          tdAwayWP.textContent = awayWP.toFixed(1) + '%';
+          tdAwayWP.className = awayWP >= 50 ? 'wp-high' : 'wp-low';
+        } else {
+          tdAwayWP.textContent = '—';
+        }
+        tr.appendChild(tdAwayWP);
+
+        // Home WP%
+        const tdHomeWP = document.createElement('td');
+        if (homeWP !== null) {
+          tdHomeWP.textContent = homeWP.toFixed(1) + '%';
+          tdHomeWP.className = homeWP >= 50 ? 'wp-high' : 'wp-low';
+        } else {
+          tdHomeWP.textContent = '—';
+        }
+        tr.appendChild(tdHomeWP);
+
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(err => {
+      document.getElementById('gamesBody').innerHTML = '<tr><td colspan="7">Could not load games.</td></tr>';
+      console.error('Error fetching games CSV:', err);
+    });
+
+  // ── Utilities ───────────────────────────────────────────────────────────────
   function normalizeDate(d) {
     const date = new Date(d);
     if (isNaN(date)) return '';
