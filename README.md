@@ -1,6 +1,6 @@
 # WebSTAR Rankings
 
-Live Rankings: https://webstar-bucket.s3.us-east-1.amazonaws.com/index.html
+Live Rankings: https://www.webstaranalytics.com/
 
 ## About
 WEBSTAR is a Bayesian power ranking system for NCAA Division I men's college basketball. It estimates each team's adjusted offensive efficiency and adjusted defensive efficiency in real time, then combines them into an overall rating used to rank all 365+ D1 programs.
