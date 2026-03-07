@@ -149,10 +149,10 @@
       const idxAwayWP  = col('away_team_wp');
 
       thead.innerHTML = '';
-      ['Game', 'Time', 'TV', 'WebStar Spread', 'Away WP%', 'Home WP%'].forEach((label, i) => {
+      ['Game', 'Time (ET)', 'TV', 'WebStar Spread', 'Away WP%', 'Home WP%'].forEach((label, i) => {
         const th = document.createElement('th');
         th.textContent = label;
-        th.addEventListener('click', () => sortTable(document.getElementById('gamesTable'), i));
+        th.addEventListener('click', () => sortGamesTable(i));
         thead.appendChild(th);
       });
 
@@ -163,74 +163,174 @@
         return;
       }
 
-      dataRows.forEach(row => {
+      // Build row data objects so we can sort and re-render
+      const gameRows = dataRows.map(row => {
         const homeTeam  = row[idxHome]   || '—';
         const awayTeam  = row[idxAway]   || '—';
         const isNeutral = (row[idxNeutral] || '').toLowerCase() === 'true' || row[idxNeutral] === '1';
-        const gameTime  = row[idxTime]   || '—';
+        const gameTime  = row[idxTime]   || '';
         const tv        = row[idxTV]     || '—';
-        const spread    = row[idxSpread] ? parseFloat(row[idxSpread]) : null;
+        const spreadRaw = row[idxSpread] ? row[idxSpread].trim() : null;
         const homeWPRaw = row[idxHomeWP] ? parseFloat(row[idxHomeWP]) : null;
         const awayWPRaw = row[idxAwayWP] ? parseFloat(row[idxAwayWP]) : null;
 
-        const homeWP = homeWPRaw;
-        const awayWP = awayWPRaw;
+        // Convert game time to Eastern Time
+        const { displayTime, sortMinutes } = convertToET(gameTime);
 
+        // Determine spread display (PK for 0)
         let spreadText = '—';
-        if (spread !== null) {
-          spreadText = row[idxSpread];
+        if (spreadRaw !== null) {
+          const spreadNum = parseFloat(spreadRaw);
+          if (!isNaN(spreadNum) && spreadNum === 0) {
+            spreadText = 'PK';
+          } else {
+            spreadText = spreadRaw;
+          }
         }
 
-        const tr = document.createElement('tr');
-
-        // Game (away vs. home)
-        const tdGame = document.createElement('td');
-        tdGame.textContent = `${awayTeam} vs. ${homeTeam}`;
-        if (isNeutral) tdGame.style.fontStyle = 'italic';
-        tr.appendChild(tdGame);
-
-        // Time
-        const tdTime = document.createElement('td');
-        tdTime.textContent = gameTime;
-        tr.appendChild(tdTime);
-
-        // TV
-        const tdTV = document.createElement('td');
-        tdTV.textContent = tv;
-        tr.appendChild(tdTV);
-
-        // Spread
-        const tdSpread = document.createElement('td');
-        tdSpread.textContent = spreadText;
-        tr.appendChild(tdSpread);
-
-        // Away WP%
-        const tdAwayWP = document.createElement('td');
-        if (awayWP !== null) {
-          tdAwayWP.textContent = awayWP.toFixed(1) + '%';
-          tdAwayWP.className = awayWP >= 50 ? 'wp-high' : 'wp-low';
-        } else {
-          tdAwayWP.textContent = '—';
-        }
-        tr.appendChild(tdAwayWP);
-
-        // Home WP%
-        const tdHomeWP = document.createElement('td');
-        if (homeWP !== null) {
-          tdHomeWP.textContent = homeWP.toFixed(1) + '%';
-          tdHomeWP.className = homeWP >= 50 ? 'wp-high' : 'wp-low';
-        } else {
-          tdHomeWP.textContent = '—';
-        }
-        tr.appendChild(tdHomeWP);
-
-        tbody.appendChild(tr);
+        return { homeTeam, awayTeam, isNeutral, displayTime, sortMinutes, tv, spreadText, homeWP: homeWPRaw, awayWP: awayWPRaw };
       });
+
+      // Sort by time (earliest first) by default
+      gameRows.sort((a, b) => a.sortMinutes - b.sortMinutes);
+
+      renderGameRows(gameRows, tbody);
+
+      // Attach sorting to the games table
+      const gamesTable = document.getElementById('gamesTable');
+      gamesTable._gameRows = gameRows;
+      gamesTable._sortedCol = null;
     })
     .catch(err => {
       document.getElementById('gamesBody').innerHTML = '<tr><td colspan="6">Could not load games.</td></tr>';
       console.error('Error fetching games CSV:', err);
     });
+
+  function renderGameRows(gameRows, tbody) {
+    tbody.innerHTML = '';
+    gameRows.forEach(g => {
+      const tr = document.createElement('tr');
+
+      // Game (away vs. home)
+      const tdGame = document.createElement('td');
+      tdGame.textContent = `${g.awayTeam} vs. ${g.homeTeam}`;
+      if (g.isNeutral) tdGame.style.fontStyle = 'italic';
+      tr.appendChild(tdGame);
+
+      // Time (ET)
+      const tdTime = document.createElement('td');
+      tdTime.textContent = g.displayTime || '—';
+      tr.appendChild(tdTime);
+
+      // TV
+      const tdTV = document.createElement('td');
+      tdTV.textContent = g.tv;
+      tr.appendChild(tdTV);
+
+      // Spread
+      const tdSpread = document.createElement('td');
+      tdSpread.textContent = g.spreadText;
+      tr.appendChild(tdSpread);
+
+      // Away WP%
+      const tdAwayWP = document.createElement('td');
+      if (g.awayWP !== null) {
+        tdAwayWP.textContent = g.awayWP.toFixed(1) + '%';
+        tdAwayWP.className = g.awayWP >= 50 ? 'wp-high' : 'wp-low';
+      } else {
+        tdAwayWP.textContent = '—';
+      }
+      tr.appendChild(tdAwayWP);
+
+      // Home WP%
+      const tdHomeWP = document.createElement('td');
+      if (g.homeWP !== null) {
+        tdHomeWP.textContent = g.homeWP.toFixed(1) + '%';
+        tdHomeWP.className = g.homeWP >= 50 ? 'wp-high' : 'wp-low';
+      } else {
+        tdHomeWP.textContent = '—';
+      }
+      tr.appendChild(tdHomeWP);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function sortGamesTable(colIndex) {
+    const gamesTable = document.getElementById('gamesTable');
+    const gameRows = gamesTable._gameRows;
+    if (!gameRows) return;
+
+    const tbody = document.getElementById('gamesBody');
+    const colKeys = ['awayTeam', 'sortMinutes', 'tv', 'spreadText', 'awayWP', 'homeWP'];
+    const key = colKeys[colIndex];
+
+    const isNumericKey = ['sortMinutes', 'awayWP', 'homeWP'].includes(key);
+
+    gameRows.sort((a, b) => {
+      const aVal = a[key] ?? (isNumericKey ? Infinity : '');
+      const bVal = b[key] ?? (isNumericKey ? Infinity : '');
+      if (isNumericKey) return aVal - bVal;
+      return String(aVal).localeCompare(String(bVal));
+    });
+
+    if (gamesTable._sortedCol === colIndex) {
+      gameRows.reverse();
+      gamesTable._sortedCol = null;
+    } else {
+      gamesTable._sortedCol = colIndex;
+    }
+
+    renderGameRows(gameRows, tbody);
+  }
+
+  /**
+   * Convert a time string to Eastern Time.
+   * Handles formats like "7:00 PM ET", "7:00 PM CT", "19:00", "7:00 PM", etc.
+   * Returns { displayTime: "7:00 PM ET", sortMinutes: 1140 }
+   */
+  function convertToET(timeStr) {
+    if (!timeStr || timeStr === '—') return { displayTime: timeStr, sortMinutes: Infinity };
+
+    // Timezone offset from ET (hours to ADD to convert to ET)
+    const tzOffsets = {
+      'ET': 0, 'EST': 0, 'EDT': 0,
+      'CT': 1, 'CST': 1, 'CDT': 1,
+      'MT': 2, 'MST': 2, 'MDT': 2,
+      'PT': 3, 'PST': 3, 'PDT': 3,
+    };
+
+    // Match patterns like "7:00 PM CT" or "19:00 CT" or "7:00 PM" or "7:00"
+    const match = timeStr.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?\s*([A-Z]{2,3})?$/i);
+    if (!match) return { displayTime: timeStr, sortMinutes: Infinity };
+
+    let hours = parseInt(match[1], 10);
+    const minutes = parseInt(match[2], 10);
+    const ampm = match[3] ? match[3].toUpperCase() : null;
+    const tz = match[4] ? match[4].toUpperCase() : 'ET';
+
+    // Convert 12-hour to 24-hour
+    if (ampm === 'PM' && hours !== 12) hours += 12;
+    if (ampm === 'AM' && hours === 12) hours = 0;
+
+    // Apply offset to convert to ET
+    const offset = tzOffsets[tz] !== undefined ? tzOffsets[tz] : 0;
+    let totalMinutes = hours * 60 + minutes + offset * 60;
+
+    // Handle day wrap
+    totalMinutes = ((totalMinutes % 1440) + 1440) % 1440;
+
+    const etHours24 = Math.floor(totalMinutes / 60);
+    const etMinutes = totalMinutes % 60;
+
+    // Format back to 12-hour with AM/PM
+    let displayHours = etHours24 % 12;
+    if (displayHours === 0) displayHours = 12;
+    const displayAmPm = etHours24 >= 12 ? 'PM' : 'AM';
+    const displayTime = `${displayHours}:${String(etMinutes).padStart(2, '0')} ${displayAmPm} ET`;
+
+    return { displayTime, sortMinutes: totalMinutes };
+  }
 
   // ── Utilities ───────────────────────────────────────────────────────────────
   function normalizeDate(d) {

@@ -49,7 +49,7 @@ def calculate_spreads_wp(schedule):
     current_rankings = pd.read_csv(io.BytesIO(obj['Body'].read()))
 
     # Filter by today's data
-    current_rankings['Date'] = pd.to_datetime(current_rankings['Date'])
+    current_rankings['Date'] = pd.to_datetime(current_rankings['Date']).dt.date
     today = datetime.now(ZoneInfo("America/New_York")).date()
     current_rankings = current_rankings[current_rankings['Date'].dt.date == today]
 

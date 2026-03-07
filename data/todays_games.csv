@@ -1,38 +1,93 @@
-,home_team,away_team,is_neutral,game_time,tv_network,home_team_rating,away_team_rating,home_team_spread,home_team_wp,away_team_wp,date
-0,High Point,Gardner-Webb,True,09:00 AM PST,ESPN+,12.54,-25.11,-25.6,99.47,0.53,2026-03-06 10:01:05.431560-05:00
-1,Central Arkansas,Bellarmine,True,09:00 AM PST,ESPN+,1.1,-8.99,-6.9,75.34,24.66,2026-03-06 10:01:05.431560-05:00
-2,Belmont,Drake,True,10:00 AM PST,ESPN+,13.56,-2.2,-10.7,85.77,14.23,2026-03-06 10:01:05.431560-05:00
-3,North Carolina A&T,Northeastern,True,11:00 AM PST,,-7.17,-9.38,-1.5,55.96,44.04,2026-03-06 10:01:05.431560-05:00
-4,Winthrop,Charleston Southern,True,11:30 AM PST,ESPN+,4.57,-4.27,-6.0,72.58,27.42,2026-03-06 10:01:05.431560-05:00
-5,Lipscomb,Florida Gulf Coast,True,11:30 AM PST,ESPN+,0.62,-6.26,-4.7,67.98,32.02,2026-03-06 10:01:05.431560-05:00
-6,Murray State,UIC,True,12:30 PM PST,ESPN+,6.46,5.26,-0.8,53.25,46.75,2026-03-06 10:01:05.431560-05:00
-7,Chattanooga,The Citadel,True,02:00 PM PST,ESPN+,-8.67,-19.77,-7.5,77.45,22.55,2026-03-06 10:01:05.431560-05:00
-8,Austin Peay,Stetson,True,02:00 PM PST,ESPN+,1.88,-12.59,-9.8,83.71,16.29,2026-03-06 10:01:05.431560-05:00
-9,Texas State,Southern Miss,True,03:00 PM PST,ESPN+,-5.89,-3.95,1.3,44.76,55.24,2026-03-06 10:01:05.431560-05:00
-10,Merrimack,Sacred Heart,True,03:00 PM PST,ESPN+,-0.93,-9.06,-5.5,70.95,29.05,2026-03-06 10:01:05.431560-05:00
-11,UNC Asheville,Longwood,True,03:00 PM PST,ESPN+,-4.61,-5.98,-0.9,53.71,46.29,2026-03-06 10:01:05.431560-05:00
-12,Akron,Northern Illinois,False,03:00 PM PST,CBSSN,13.49,-16.43,-23.2,98.99,1.01,2026-03-06 10:01:05.431560-05:00
-13,Eastern Michigan,Bowling Green,False,03:30 PM PST,ESPN+,-4.61,2.01,1.6,43.66,56.34,2026-03-06 10:01:05.431560-05:00
-14,South Dakota,Omaha,True,04:00 PM PST,,-9.07,-6.56,1.7,43.23,56.77,2026-03-06 10:01:05.431560-05:00
-15,Bradley,Valparaiso,True,04:00 PM PST,ESPN+,5.03,1.09,-2.7,60.55,39.45,2026-03-06 10:01:05.431560-05:00
-16,Dayton,VCU,False,04:00 PM PST,ESPN2,10.66,14.87,-0.0,50.17,49.83,2026-03-06 10:01:05.431560-05:00
-17,Brown,Pennsylvania,False,04:00 PM PST,ESPN+,-8.98,1.38,4.1,33.96,66.04,2026-03-06 10:01:05.431560-05:00
-18,Kent State,Western Michigan,False,04:00 PM PST,ESPN+,1.23,-9.92,-10.5,85.25,14.75,2026-03-06 10:01:05.431560-05:00
-19,Ball State,Central Michigan,False,04:00 PM PST,ESPN+,-11.29,-8.37,-0.9,53.65,46.35,2026-03-06 10:01:05.431560-05:00
-20,Toledo,Buffalo,False,04:00 PM PST,ESPN+,2.21,-0.2,-4.5,67.5,32.5,2026-03-06 10:01:05.431560-05:00
-21,Harvard,Columbia,False,04:00 PM PST,ESPN+,2.38,0.14,-4.4,67.08,32.92,2026-03-06 10:01:05.431560-05:00
-22,UNC Greensboro,VMI,True,04:30 PM PST,ESPN+,-10.5,-22.84,-8.4,79.9,20.1,2026-03-06 10:01:05.431560-05:00
-23,Queens University,West Georgia,True,04:30 PM PST,ESPN+,-1.39,-11.07,-6.6,74.45,25.55,2026-03-06 10:01:05.431560-05:00
-24,Tennessee State,UT Martin,True,05:00 PM PST,ESPNU,-0.81,-1.21,-0.3,51.08,48.92,2026-03-06 10:01:05.431560-05:00
-25,West Virginia,UCF,False,05:00 PM PST,CBSSN,11.11,12.2,-2.2,58.55,41.45,2026-03-06 10:01:05.431560-05:00
-26,South Alabama,Georgia Southern,True,05:30 PM PST,ESPN+,0.12,-5.37,-3.7,64.53,35.47,2026-03-06 10:01:05.431560-05:00
-27,Saint Peter's,Fairfield,True,05:30 PM PST,ESPN+,-3.98,-5.32,-0.9,53.62,46.38,2026-03-06 10:01:05.431560-05:00
-28,Radford,Presbyterian,True,05:30 PM PST,ESPN+,-4.92,-6.56,-1.1,54.43,45.57,2026-03-06 10:01:05.431560-05:00
-29,Seton Hall,St. John's,False,06:00 PM PST,FS1,12.28,21.56,3.4,36.69,63.31,2026-03-06 10:01:05.431560-05:00
-30,Ohio,Miami (OH),False,06:00 PM PST,ESPN2,-5.1,10.73,7.8,21.63,78.37,2026-03-06 10:01:05.431560-05:00
-31,Washington State,Portland,True,06:00 PM PST,ESPN+,2.56,-6.11,-5.9,72.2,27.8,2026-03-06 10:01:05.431560-05:00
-32,North Dakota,Denver,True,06:30 PM PST,,-10.39,-4.5,4.0,34.46,65.54,2026-03-06 10:01:05.431560-05:00
-33,Illinois State,Northern Iowa,True,06:30 PM PST,ESPN+,8.36,10.27,1.3,44.84,55.16,2026-03-06 10:01:05.431560-05:00
-34,San Diego State,UNLV,False,07:00 PM PST,CBSSN,13.66,3.68,-9.7,83.34,16.66,2026-03-06 10:01:05.431560-05:00
-35,Morehead State,Southeast Missouri State,True,07:30 PM PST,ESPNU,-6.97,-3.15,2.6,39.77,60.23,2026-03-06 10:01:05.431560-05:00
-36,Seattle U,San Diego,True,08:30 PM PST,ESPN+,3.14,-6.71,-6.7,74.82,25.18,2026-03-06 10:01:05.431560-05:00
+,home_team,away_team,is_neutral,game_time,tv_network,home_team_rating,away_team_rating,home_team_spread,home_team_wp,away_team_wp,home_team_spread_display
+0,Iowa State,Arizona State,False,11:00 AM PST,FS1,26.76,9.09,-14.9,93.19,6.81,Iowa State -14.9
+1,Kansas,Kansas State,False,11:00 AM PST,CBS,21.59,4.53,-14.5,92.62,7.38,Kansas -14.5
+2,Miami,Louisville,False,11:00 AM PST,ESPNU,18.85,24.2,0.7,47.08,52.92,Miami +0.7
+3,Tennessee,Vanderbilt,False,11:00 AM PST,ESPN,23.42,23.48,-2.9,61.25,38.75,Tennessee -2.9
+4,Long Island University,Wagner,False,11:00 AM PST,ESPN+,-1.43,-9.89,-8.6,80.63,19.37,Long Island University -8.6
+5,Vermont,Bryant,False,11:00 AM PST,ESPN+,-2.98,-19.92,-14.4,92.51,7.49,Vermont -14.4
+6,Dartmouth,Cornell,False,11:00 AM PST,ESPN+,-6.0,2.93,3.2,37.59,62.41,Dartmouth +3.2
+7,Loyola Chicago,George Washington,False,11:00 AM PST,USA Net,-12.17,10.59,12.6,10.47,89.53,Loyola Chicago +12.6
+8,Fordham,Rhode Island,False,11:00 AM PST,ESPN+,-0.41,2.45,-1.0,53.82,46.18,Fordham -1.0
+9,Duquesne,Richmond,False,11:00 AM PST,ESPN+,2.07,2.1,-2.9,61.33,38.67,Duquesne -2.9
+10,TCU,Cincinnati,False,11:00 AM PST,TNT/truTV,14.64,13.7,-3.5,63.83,36.17,TCU -3.5
+11,Florida State,SMU,False,11:00 AM PST,ACC Network,9.39,16.96,2.2,41.14,58.86,Florida State +2.2
+12,Yale,Princeton,False,11:00 AM PST,ESPN+,12.39,-4.74,-14.5,92.69,7.31,Yale -14.5
+13,Florida International,Western Kentucky,False,11:00 AM PST,ESPN+,-2.04,1.89,-0.2,50.92,49.08,Florida International -0.2
+14,Liberty,Sam Houston,False,11:00 AM PST,ESPN+,5.59,6.19,-2.5,59.84,40.16,Liberty -2.5
+15,NC State,Stanford,False,11:15 AM PST,The CW Network,18.59,10.08,-8.7,80.73,19.27,NC State -8.7
+16,Drexel,Northeastern,True,11:30 AM PST,,-2.89,-8.87,-4.1,65.76,34.24,Drexel -4.1
+17,Wofford,UNC Greensboro,True,11:30 AM PST,ESPN+,-4.93,-10.15,-3.5,63.85,36.15,Wofford -3.5
+18,Winthrop,Presbyterian,True,11:30 AM PST,ESPN+,4.57,-6.13,-7.3,76.62,23.38,Winthrop -7.3
+19,Missouri State,Middle Tennessee,False,12:00 PM PST,ESPN+,-2.5,0.71,-0.7,52.87,47.13,Missouri State -0.7
+20,UTEP,Jacksonville State,False,12:00 PM PST,ESPN+,-8.53,-2.95,0.9,46.46,53.54,UTEP +0.9
+21,Marquette,UConn,False,09:30 AM PST,FOX,6.04,25.58,10.4,14.99,85.01,Marquette +10.4
+22,Oklahoma State,Houston,False,09:00 AM PST,CBS,7.5,27.77,10.9,13.87,86.13,Oklahoma State +10.9
+23,Virginia,Virginia Tech,False,09:00 AM PST,The CW Network,23.38,11.96,-10.7,85.67,14.33,Virginia -10.7
+24,Missouri,Arkansas,False,09:00 AM PST,ESPN,11.18,23.35,5.4,29.59,70.41,Missouri +5.4
+25,Stony Brook,Campbell,True,09:00 AM PST,,-5.17,-2.69,1.7,43.31,56.69,Stony Brook +1.7
+26,East Tennessee State,The Citadel,True,09:00 AM PST,ESPN+,5.56,-19.22,-16.8,95.38,4.62,East Tennessee State -16.8
+27,Mercyhurst,Stonehill,False,09:00 AM PST,ESPN+,-7.68,-14.77,-7.7,77.98,22.02,Mercyhurst -7.7
+28,High Point,UNC Asheville,True,09:00 AM PST,ESPN+,12.29,-4.55,-11.4,87.36,12.64,High Point -11.4
+29,St. Bonaventure,Davidson,False,09:00 AM PST,USA Net,1.55,4.98,-0.6,52.28,47.72,St. Bonaventure -0.6
+30,DePaul,Butler,False,09:00 AM PST,FS1,4.92,8.37,-0.6,52.22,47.78,DePaul -0.6
+31,Villanova,Xavier,False,09:00 AM PST,TNT/truTV,17.13,5.04,-11.1,86.67,13.33,Villanova -11.1
+32,Boston College,Notre Dame,False,09:00 AM PST,ESPNU,-0.04,6.42,1.5,44.09,55.91,Boston College +1.5
+33,Clemson,Georgia Tech,False,09:00 AM PST,ACC Network,17.44,-1.11,-15.5,93.94,6.06,Clemson -15.5
+34,Delaware,Louisiana Tech,False,09:00 AM PST,ESPN+,-8.27,-6.49,-1.7,56.72,43.28,Delaware -1.7
+35,UMass Lowell,UAlbany,False,10:00 AM PST,ESPN+,-12.08,-12.83,-3.4,63.34,36.66,UMass Lowell -3.4
+36,UMBC,New Hampshire,False,10:00 AM PST,ESPN+,-0.92,-17.58,-14.2,92.24,7.76,UMBC -14.2
+37,Saint Joseph's,La Salle,False,10:00 AM PST,ESPN+,2.44,-5.93,-8.6,80.46,19.54,Saint Joseph's -8.6
+38,Ole Miss,South Carolina,False,10:00 AM PST,SEC Network,7.12,4.84,-4.4,67.18,32.82,Ole Miss -4.4
+39,UIC,Drake,True,12:30 PM PST,CBSSN,5.89,-0.85,-4.6,67.64,32.36,UIC -4.6
+40,Mississippi State,Georgia,False,12:30 PM PST,SEC Network,3.47,19.29,7.8,21.65,78.35,Mississippi State +7.8
+41,Kentucky,Florida,False,01:00 PM PST,ESPN,19.52,31.45,5.2,30.15,69.85,Kentucky +5.2
+42,Purdue,Wisconsin,False,01:00 PM PST,CBS,26.81,18.35,-8.6,80.63,19.37,Purdue -8.6
+43,George Mason,Saint Louis,False,01:00 PM PST,USA Net,6.45,22.15,7.8,21.89,78.11,George Mason +7.8
+44,NJIT,Maine,False,01:00 PM PST,ESPN+,-14.89,-15.89,-3.6,63.98,36.02,NJIT -3.6
+45,Utah State,New Mexico,False,01:00 PM PST,,19.94,13.77,-7.1,76.08,23.92,Utah State -7.1
+46,Wichita State,Florida Atlantic,False,01:00 PM PST,ESPNU,9.94,3.97,-7.0,75.66,24.34,Wichita State -7.0
+47,Colorado State,Boise State,False,01:00 PM PST,,8.69,11.58,-0.9,53.74,46.26,Colorado State -0.9
+48,Wake Forest,California,False,01:00 PM PST,ACC Network,10.67,9.75,-3.5,63.78,36.22,Wake Forest -3.5
+49,New Mexico State,Kennesaw State,False,01:00 PM PST,ESPN+,-0.83,0.28,-2.1,58.5,41.5,New Mexico State -2.1
+50,Syracuse,Pittsburgh,False,01:30 PM PST,The CW Network,9.02,4.26,-6.1,73.01,26.99,Syracuse -6.1
+51,Central Arkansas,Florida Gulf Coast,True,02:00 PM PST,ESPN+,1.39,-5.08,-4.4,66.98,33.02,Central Arkansas -4.4
+52,San José State,Wyoming,False,02:00 PM PST,,-8.16,5.53,6.4,26.12,73.88,San José State +6.4
+53,Baylor,Utah,False,02:00 PM PST,Peacock/NBCSN,12.83,1.53,-10.6,85.48,14.52,Baylor -10.6
+54,Ohio State,Indiana,False,02:30 PM PST,FOX,18.59,16.97,-4.0,65.54,34.46,Ohio State -4.0
+55,Towson,Hampton,True,03:00 PM PST,,-0.13,-7.8,-5.2,69.87,30.13,Towson -5.2
+56,Samford,Furman,True,03:00 PM PST,ESPN+,-2.18,-0.9,0.9,46.54,53.46,Samford +0.9
+57,Bradley,Northern Iowa,True,03:00 PM PST,CBSSN,5.02,11.02,4.1,34.19,65.81,Bradley +4.1
+58,Quinnipiac,Marist,True,03:00 PM PST,ESPN+,-3.0,0.6,2.4,40.34,59.66,Quinnipiac +2.4
+59,LSU,Texas A&M,False,03:00 PM PST,SEC Network,10.16,15.26,0.6,47.76,52.24,LSU +0.6
+60,Duke,North Carolina,False,03:30 PM PST,ESPN,38.45,20.34,-15.2,93.57,6.43,Duke -15.2
+61,App State,Southern Miss,True,03:30 PM PST,ESPN+,-0.06,-4.01,-2.7,60.57,39.43,App State -2.7
+62,Cal Poly,Cal State Bakersfield,False,04:00 PM PST,ESPN+,-5.98,-15.62,-9.4,82.76,17.24,Cal Poly -9.4
+63,Abilene Christian,UT Arlington,False,04:00 PM PST,ESPN+,-7.03,-0.42,1.6,43.69,56.31,Abilene Christian +1.6
+64,Idaho State,Northern Arizona,True,04:30 PM PST,ESPN+,-4.67,-13.1,-5.7,71.65,28.35,Idaho State -5.7
+65,Austin Peay,Queens University,True,04:30 PM PST,ESPN+,1.71,-1.37,-2.1,58.28,41.72,Austin Peay -2.1
+66,North Dakota State,Omaha,True,05:00 PM PST,CBSSN,5.13,-6.07,-7.6,77.65,22.35,North Dakota State -7.6
+67,Grand Canyon,Fresno State,False,05:00 PM PST,,9.82,1.86,-8.3,79.69,20.31,Grand Canyon -8.3
+68,Cal State Northridge,Cal State Fullerton,False,05:00 PM PST,ESPN+,-1.71,-1.86,-3.0,61.8,38.2,Cal State Northridge -3.0
+69,Georgetown,Providence,False,05:00 PM PST,truTV,6.23,8.9,-1.1,54.33,45.67,Georgetown -1.1
+70,UC Irvine,UC Davis,False,05:00 PM PST,ESPNU,4.37,-0.89,-6.5,74.12,25.88,UC Irvine -6.5
+71,Alabama,Auburn,False,05:30 PM PST,ESPN,22.55,17.03,-6.6,74.69,25.31,Alabama -6.6
+72,William & Mary,Elon,True,05:30 PM PST,,5.0,-3.02,-5.4,70.7,29.3,William & Mary -5.4
+73,Mercer,Western Carolina,True,05:30 PM PST,ESPN+,1.28,-3.99,-3.6,63.98,36.02,Mercer -3.6
+74,Siena,Mount St. Mary's,True,05:30 PM PST,ESPN+,-0.25,-9.4,-6.2,73.28,26.72,Siena -6.2
+75,Texas,Oklahoma,False,05:30 PM PST,SEC Network,16.94,12.51,-5.9,72.27,27.73,Texas -5.9
+76,Southern Utah,California Baptist,False,05:30 PM PST,ESPN+,-9.34,4.93,6.8,24.86,75.14,Southern Utah +6.8
+77,San Francisco,Portland,True,06:00 PM PST,ESPN+,3.2,-5.61,-6.0,72.51,27.49,San Francisco -6.0
+78,Coastal Carolina,Georgia Southern,True,06:00 PM PST,ESPN+,-4.29,-4.81,-0.4,51.41,48.59,Coastal Carolina -0.4
+79,Tennessee State,Morehead State,True,06:00 PM PST,ESPN2,-0.26,-6.62,-4.3,66.71,33.29,Tennessee State -4.3
+80,USC,UCLA,False,06:00 PM PST,FS1,8.75,16.59,2.4,40.43,59.57,USC +2.4
+81,Minnesota,Northwestern,False,06:00 PM PST,BTN,9.75,10.2,-2.6,60.24,39.76,Minnesota -2.6
+82,UC Santa Barbara,UC San Diego,False,06:00 PM PST,ESPN+,3.01,3.45,-2.6,60.26,39.74,UC Santa Barbara -2.6
+83,Utah Tech,Utah Valley,False,06:00 PM PST,ESPN+,-1.33,9.05,4.1,33.91,66.09,Utah Tech +4.1
+84,Idaho,Sacramento State,True,07:00 PM PST,ESPN+,0.99,-7.42,-5.7,71.6,28.4,Idaho -5.7
+85,Nevada,Air Force,False,07:00 PM PST,,9.92,-21.65,-24.3,99.25,0.75,Nevada -24.3
+86,BYU,Texas Tech,False,07:30 PM PST,ESPN,19.85,22.73,-0.9,53.76,46.24,BYU -0.9
+87,St. Thomas-Minnesota,North Dakota,True,07:30 PM PST,CBSSN,7.94,-9.7,-12.0,88.45,11.55,St. Thomas-Minnesota -12.0
+88,Colorado,Arizona,False,08:00 PM PST,ESPN2,8.89,32.96,13.4,8.94,91.06,Colorado +13.4
+89,Oregon,Washington,False,08:00 PM PST,FS1,3.71,11.84,2.6,39.67,60.33,Oregon +2.6
+90,Pacific,Seattle U,True,08:30 PM PST,ESPN+,4.21,2.86,-0.9,53.65,46.35,Pacific -0.9
+91,Hawai'i,Long Beach State,False,08:59 PM PST,ESPN+,6.25,-8.42,-12.9,90.08,9.92,Hawai'i -12.9
