@@ -62,6 +62,7 @@
         <tr><td colspan="7">Loading…</td></tr>
       </tbody>
     </table>
+    <p style="font-style: italic; font-size: 0.85em; margin-top: 6px;">Neutral court indicated by italics</p>
   </div>
 
 </div>
@@ -149,12 +150,6 @@
       const idxSpread  = col('home_team_spread');
       const idxHomeWP  = col('home_team_wp');
       const idxAwayWP  = col('away_team_wp');
-      const idxDate    = col('date');
-
-      const todayStr = new Date().toISOString().split('T')[0];
-      const todayGames = idxDate !== -1
-        ? dataRows.filter(r => normalizeDate(r[idxDate]) === todayStr)
-        : dataRows;
 
       thead.innerHTML = '';
       ['Away', 'Home', 'Time', 'TV', 'Spread', 'Away WP%', 'Home WP%'].forEach((label, i) => {
@@ -166,12 +161,12 @@
 
       tbody.innerHTML = '';
 
-      if (todayGames.length === 0) {
+      if (dataRows.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7">No games today.</td></tr>';
         return;
       }
 
-      todayGames.forEach(row => {
+      dataRows.forEach(row => {
         const homeTeam  = row[idxHome]   || '—';
         const awayTeam  = row[idxAway]   || '—';
         const isNeutral = (row[idxNeutral] || '').toLowerCase() === 'true' || row[idxNeutral] === '1';

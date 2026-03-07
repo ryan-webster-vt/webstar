@@ -2,7 +2,7 @@ import pandas as pd
 import pymc as pm
 import arviz as az
 import numpy as np
-from clean_names import normalize_team_name
+from utils.clean_names import normalize_team_name
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
@@ -132,7 +132,15 @@ def main():
     # Concat to current rankings
     current_rankings = pd.read_csv('data/current_rankings.csv')
     final_rankings = pd.concat([current_rankings, rankings], ignore_index = True)
-    final_rankings.to_csv('data/current_rankings.csv', index = False)
+
+    # Save data onto S3
+    csv_buffer = io.StringIO()
+    final_rankings.to_csv(csv_buffer, index=False)
+    s3.put_object(
+        Bucket = 'webstar-bucket',
+        Key = 'current_rankings.csv',
+        Body = csv_buffer.getvalue()
+    )
 
 if __name__ == "__main__":
     main()

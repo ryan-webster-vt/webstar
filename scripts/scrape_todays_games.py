@@ -3,9 +3,15 @@ import cbbpy.mens_scraper as s
 import boto3
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-from clean_names import normalize_team_name
 from scipy.stats import norm
 import io
+import numpy as np
+import os
+
+
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from utils.clean_names import normalize_team_name
 
 s3 = boto3.client('s3')
 
@@ -55,6 +61,7 @@ def calculate_spreads_wp(schedule):
 
     # Map teams net values onto schedule
     team_rating_map = current_rankings.set_index('Team')['Total']
+    print(team_rating_map)
     schedule['home_team_rating'] = schedule['home_team'].map(team_rating_map)
     schedule['away_team_rating'] = schedule['away_team'].map(team_rating_map)
 
@@ -68,6 +75,16 @@ def calculate_spreads_wp(schedule):
     schedule[['home_team_wp', 'away_team_wp']] = (schedule[['home_team_wp', 'away_team_wp']] * 100).round(2)
     schedule['home_team_spread'] = schedule['home_team_spread'].round(1)
 
+    # Add team label for spread
+    schedule['home_team_spread_display'] = (
+    schedule['home_team'] + ' ' +
+    np.where(
+        schedule['home_team_spread'] > 0,
+        '+' + schedule['home_team_spread'].astype(str),
+        schedule['home_team_spread'].astype(str)
+    )
+)
+
     schedule['date'] = datetime.now(ZoneInfo("America/New_York"))
 
     return schedule
@@ -76,7 +93,7 @@ def main():
     schedule = scrape_games()
     final_schedule = calculate_spreads_wp(schedule)
 
-     # Save data onto S3
+    # Save data onto S3
     csv_buffer = io.StringIO()
     final_schedule.to_csv(csv_buffer, index=False)
     s3.put_object(
