@@ -1,5 +1,6 @@
 import logging
-from datetime import ZoneInfo, datetime, time
+from zoneinfo import ZoneInfo
+from datetime import datetime, time
 
 from scrape_data_v2 import main as main_scrape_data
 from scrape_todays_games import main as main_scrape_todays_games
