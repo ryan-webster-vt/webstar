@@ -2,12 +2,16 @@ import pandas as pd
 import pymc as pm
 import arviz as az
 import numpy as np
-from utils.clean_names import normalize_team_name
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import json
 import boto3
 import io
+import os
+
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from utils.clean_names import normalize_team_name
 
 def main():
     # Load full season data from S3
