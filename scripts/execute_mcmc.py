@@ -20,7 +20,7 @@ def main():
     df = pd.read_csv(io.BytesIO(obj['Body'].read()))
 
     # Load canonical team list from JSON
-    with open('data/ncaa_teams.json', 'r') as f:
+    with open('../data/ncaa_teams.json', 'r') as f:
         team_list = json.load(f)
 
     df['team'] = df['team'].apply(normalize_team_name)
