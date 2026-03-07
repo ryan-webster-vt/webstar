@@ -134,7 +134,8 @@ def main():
     rankings[['Total', 'AdjOffEff', 'AdjDefEff']] = (rankings[['Total', 'AdjOffEff', 'AdjDefEff']] * 100).round(2)
 
     # Concat to current rankings
-    current_rankings = pd.read_csv('data/current_rankings.csv')
+    obj = s3.get_object(Bucket='webstar-bucket', Key='current_rankings.csv')
+    current_rankings = pd.read_csv(io.BytesIO(obj['Body'].read()))
     final_rankings = pd.concat([current_rankings, rankings], ignore_index = True)
 
     # Save data onto S3
