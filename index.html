@@ -23,7 +23,6 @@
       font-size: 1em;
     }
 
-    /* WP% cell coloring: green = favored, red = underdog */
     .wp-high {
       color: #1a7a1a;
       font-weight: bold;
@@ -31,8 +30,6 @@
     .wp-low {
       color: #b30000;
     }
-
-    /* Neutral site italics applied via JS */
   </style>
   <link rel="apple-touch-icon" sizes="180x180" href="/website-assets/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/website-assets/favicon-32x32.png">
@@ -59,7 +56,7 @@
         <tr id="gamesHeader"></tr>
       </thead>
       <tbody id="gamesBody">
-        <tr><td colspan="7">Loading…</td></tr>
+        <tr><td colspan="6">Loading…</td></tr>
       </tbody>
     </table>
     <p style="font-style: italic; font-size: 0.85em; margin-top: 6px;">Neutral court indicated by italics</p>
@@ -147,12 +144,12 @@
       const idxNeutral = col('is_neutral');
       const idxTime    = col('game_time');
       const idxTV      = col('tv_network');
-      const idxSpread  = col('home_team_spread');
+      const idxSpread  = col('home_team_spread_display');
       const idxHomeWP  = col('home_team_wp');
       const idxAwayWP  = col('away_team_wp');
 
       thead.innerHTML = '';
-      ['Away', 'Home', 'Time', 'TV', 'Spread', 'Away WP%', 'Home WP%'].forEach((label, i) => {
+      ['Game', 'Time', 'TV', 'WebStar Spread', 'Away WP%', 'Home WP%'].forEach((label, i) => {
         const th = document.createElement('th');
         th.textContent = label;
         th.addEventListener('click', () => sortTable(document.getElementById('gamesTable'), i));
@@ -162,7 +159,7 @@
       tbody.innerHTML = '';
 
       if (dataRows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7">No games today.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6">No games today.</td></tr>';
         return;
       }
 
@@ -176,28 +173,21 @@
         const homeWPRaw = row[idxHomeWP] ? parseFloat(row[idxHomeWP]) : null;
         const awayWPRaw = row[idxAwayWP] ? parseFloat(row[idxAwayWP]) : null;
 
-        // Values already in %xx.xx form — use directly
         const homeWP = homeWPRaw;
         const awayWP = awayWPRaw;
 
         let spreadText = '—';
         if (spread !== null) {
-          spreadText = spread > 0 ? `+${spread}` : spread < 0 ? `${spread}` : 'PK';
+          spreadText = row[idxSpread];
         }
 
         const tr = document.createElement('tr');
 
-        // Away team
-        const tdAway = document.createElement('td');
-        tdAway.textContent = awayTeam;
-        if (isNeutral) tdAway.style.fontStyle = 'italic';
-        tr.appendChild(tdAway);
-
-        // Home team
-        const tdHome = document.createElement('td');
-        tdHome.textContent = homeTeam;
-        if (isNeutral) tdHome.style.fontStyle = 'italic';
-        tr.appendChild(tdHome);
+        // Game (away vs. home)
+        const tdGame = document.createElement('td');
+        tdGame.textContent = `${awayTeam} vs. ${homeTeam}`;
+        if (isNeutral) tdGame.style.fontStyle = 'italic';
+        tr.appendChild(tdGame);
 
         // Time
         const tdTime = document.createElement('td');
@@ -209,7 +199,7 @@
         tdTV.textContent = tv;
         tr.appendChild(tdTV);
 
-        // Spread (home team perspective)
+        // Spread
         const tdSpread = document.createElement('td');
         tdSpread.textContent = spreadText;
         tr.appendChild(tdSpread);
@@ -238,7 +228,7 @@
       });
     })
     .catch(err => {
-      document.getElementById('gamesBody').innerHTML = '<tr><td colspan="7">Could not load games.</td></tr>';
+      document.getElementById('gamesBody').innerHTML = '<tr><td colspan="6">Could not load games.</td></tr>';
       console.error('Error fetching games CSV:', err);
     });
 
