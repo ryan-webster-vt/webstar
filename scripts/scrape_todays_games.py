@@ -22,7 +22,6 @@ def home_team_spread(home, away, neutral):
 
 def home_team_wp(home_spread):
     home_wp = 1 - norm.cdf(0, loc=home_spread, scale=10)
-    away_wp = 1 - home_wp
     return home_wp
 
 def scrape_games():
@@ -49,9 +48,9 @@ def calculate_spreads_wp(schedule):
     current_rankings = pd.read_csv(io.BytesIO(obj['Body'].read()))
 
     # Filter by today's data
-    current_rankings['Date'] = pd.to_datetime(current_rankings['Date']).dt.date
+    current_rankings['Date'] = pd.to_datetime(current_rankings['Date'], format='mixed').dt.date
     today = datetime.now(ZoneInfo("America/New_York")).date()
-    current_rankings = current_rankings[current_rankings['Date'].dt.date == today]
+    current_rankings = current_rankings[current_rankings['Date'] == today]
 
     # Select necessary cols, normalize teams name
     cols = ['game_id', 'home_team', 'away_team', 'is_neutral', 'game_time', 'tv_network']
