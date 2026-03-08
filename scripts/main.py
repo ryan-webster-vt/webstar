@@ -32,14 +32,14 @@ def main():
         logging.info(f"Archiving yesterday's games...")
         main_archive_game_results()
 
-        logging.info(f"Scraping today's games...")
-        main_scrape_todays_games()
-
         logging.info(f"Scraping boxscore data...")
         main_scrape_data()
 
         logging.info(f"Running MCMC model...")
         main_execute_mcmc()
+
+        logging.info(f"Scraping today's games...")
+        main_scrape_todays_games()
 
         logging.info(f"Pipeline finished")
 
