@@ -5,6 +5,7 @@ from datetime import datetime, time
 from scrape_data_v2 import main as main_scrape_data
 from scrape_todays_games import main as main_scrape_todays_games
 from execute_mcmc import main as main_execute_mcmc
+from archive_game_results import main as main_archive_game_results
 
 logging.basicConfig(
     filename='../logs/pipeline.log',
@@ -28,6 +29,9 @@ def main():
 
     logging.info(f"Starting pipeline")
     try:
+        logging.info(f"Archiving yesterday's games...")
+        main_archive_game_results()
+
         logging.info(f"Scraping today's games...")
         main_scrape_todays_games()
 

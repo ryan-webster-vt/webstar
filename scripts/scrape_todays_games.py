@@ -54,7 +54,7 @@ def calculate_spreads_wp(schedule):
     current_rankings = current_rankings[current_rankings['Date'].dt.date == today]
 
     # Select necessary cols, normalize teams name
-    cols = ['home_team', 'away_team', 'is_neutral', 'game_time', 'tv_network']
+    cols = ['game_id', 'home_team', 'away_team', 'is_neutral', 'game_time', 'tv_network']
     schedule = schedule[cols]
     schedule['home_team'] = schedule['home_team'].apply(normalize_team_name)
     schedule['away_team'] = schedule['away_team'].apply(normalize_team_name)
