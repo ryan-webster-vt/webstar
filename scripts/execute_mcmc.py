@@ -85,7 +85,7 @@ def main():
         y = pm.Normal('y', mu=ppp_hat, sigma=sigma, observed=df['ppp_off_team'])
         
         # Sample posterior
-        trace = pm.sample(1000, tune=500, target_accept=0.9, progressbar=True)
+        trace = pm.sample(2000, tune=500, target_accept=0.9, progressbar=True)
 
     # Examine results
     az.summary(trace, var_names=["mu", "team_off", "opp_def", "beta_home"])
