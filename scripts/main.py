@@ -1,6 +1,9 @@
 import logging
 from zoneinfo import ZoneInfo
 from datetime import datetime, time
+from dotenv import load_dotenv
+import boto3
+import os
 
 from scrape_data_v2 import main as main_scrape_data
 from scrape_todays_games import main as main_scrape_todays_games
@@ -42,6 +45,16 @@ def main():
         main_scrape_todays_games()
 
         logging.info(f"Pipeline finished")
+
+        # Invalidate CloudFront cache, allows data to refresh
+        load_dotenv()
+        boto3.client('cloudfront').create_invalidation(
+            DistributionId=os.environ['CF_DIST_ID'],
+            InvalidationBatch={
+                'Paths': {'Quantity': 1, 'Items': ['/*']},
+                'CallerReference': f"pipeline-{datetime.now(datetime.timezone.utc).date()}"
+            }
+        )
 
     except Exception as e:
         logging.error(f"Pipeline failed: {e}")
