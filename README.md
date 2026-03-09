@@ -39,6 +39,7 @@ offensive and defensive efficiencies every day. These effencies are calculated b
 ## Author
 
 Ryan Webster
+
 🔗LinkedIn: [https://www.linkedin.com/in/ryan-webster-vt/](https://www.linkedin.com/in/ryan-webster-vt/)
 
 ## License
