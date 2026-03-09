@@ -1,9 +1,33 @@
-# WebSTAR Rankings
+# WebStar Analytics
 
 Live Rankings: https://www.webstaranalytics.com/
 
 ## About
-WEBSTAR is a Bayesian power ranking system for NCAA Division I men's college basketball. It estimates each team's adjusted offensive efficiency and adjusted defensive efficiency in real time, then combines them into an overall rating used to rank all 365+ D1 programs.
-The model is updated continuously throughout the season at 3AM everyday to ensure the conclusion of all games, giving you a current snapshot of team strength rather than a static end-of-season summary.
 
-<img width="912" height="1438" alt="image" src="https://github.com/user-attachments/assets/1da3c0c3-9069-4134-a4f9-691c7887ed54" />
+Webstar Analytics is an automated sports data science and pipeline platform that models and ranks all 365 NCAA Men's Division I College Basketball teams using adjusted
+offensive and defensive efficiencies every day. With these values, spreads and win probabilities are then calculated for that day's matchups, allowing the user to compare WebStar's results to other sportsbooks in order to make an educated decision. This project integrates AWS S3, EC2, CloudFront, and Python to efficiently manage data and deliver real-time predictions.
+
+## Features
+
+- Light weight website that displays up-to-date rankings for all 365 NCAA Men's College Basketball teams, sortable by offensive and defensive scores.
+- Displays today's matchups along with the imputed spreads and win probabilities.
+- Automated data pipeline using AWS EC2, while storing data and hosting website on AWS S3.
+- Archives previous results which can be used to validate model accuracy on final scores.
+
+## Technologies
+
+- Python (pandas, numpy, boto3)
+- AWS S3, EC2 (Ubuntu), CloudFront, EventBridge, shell scripting
+- Git & GitHub for version control
+
+## Future Work
+
+- Integrate an up-to-date API onto various sportsbooks to determine which games have the largest edges to bet on
+
+## Author
+
+Ryan Webster
+
+## License
+
+This project is licensed under the MIT License.
