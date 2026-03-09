@@ -5,7 +5,7 @@ Live Rankings: https://www.webstaranalytics.com/
 ## About
 
 Webstar Analytics is an automated sports data science and pipeline platform that models and ranks all 365 NCAA Men's Division I College Basketball teams using adjusted
-offensive and defensive efficiencies every day. With these values, spreads and win probabilities are then calculated for that day's matchups, allowing the user to compare WebStar's results to other sportsbooks in order to make an educated decision. This project integrates AWS S3, EC2, CloudFront, and Python to efficiently manage data and deliver real-time predictions.
+offensive and defensive efficiencies every day. These effencies are calculated by using a team's points per possesion scored and allowed, adjusting it based on opponent quality and home court advantage using a Bayesian hierarchical model. With these values, spreads and win probabilities are then calculated for that day's matchups, allowing the user to compare WebStar's results to other sportsbooks in order to make an educated decision. This project integrates AWS S3, EC2, CloudFront, and Python to efficiently manage data and deliver real-time predictions.
 
 <!-- First image, width reduced to 400px -->
 <img src="https://github.com/user-attachments/assets/a3b75fc8-af8a-45a8-a4d0-6ceb4a39dbb7" width="300" />
