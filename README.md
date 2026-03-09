@@ -1,10 +1,8 @@
 # WebStar Analytics
-
-Live Rankings: https://www.webstaranalytics.com/
-
+🔗 **Live Site:** [webstaranalytics.com](https://www.webstaranalytics.com/)
 ## About
 
-Webstar Analytics is an automated sports data science and pipeline platform that models and ranks all 365 NCAA Men's Division I College Basketball teams using adjusted
+WebStar Analytics is an automated sports data science and pipeline platform that models and ranks all 365 NCAA Men's Division I College Basketball teams using adjusted
 offensive and defensive efficiencies every day. These effencies are calculated by using a team's points per possesion scored and allowed, adjusting it based on opponent quality and home court advantage using a Bayesian hierarchical model. With these values, spreads and win probabilities are then calculated for that day's matchups, allowing the user to compare WebStar's results to other sportsbooks in order to make an educated decision. This project integrates AWS S3, EC2, CloudFront, and Python to efficiently manage data and deliver real-time predictions.
 
 <!-- First image, width reduced to 400px -->
@@ -25,6 +23,14 @@ offensive and defensive efficiencies every day. These effencies are calculated b
 - Python (pandas, numpy, boto3)
 - AWS S3, EC2 (Ubuntu), CloudFront, EventBridge, shell scripting
 - Git & GitHub for version control
+
+## Architecture
+- Every morning at 8 AM, AWS EventBridge calls on the dedicated AWS EC2 instance to wake up and automatically initialize the `main.py` script.
+- In doing so, it first calls on `archive_game_results.py` to take yesterday's games, find the final scores, and store it on a dedicated file in the AWS S3. This file is used for analytics and to prevent the client having to load an entire season's worth of results, only for it to be filtered client side to display today's games.
+- Next, `scrape_data.py` is ran, this computes all of yesterday's boxscores and computes neccessary variables such as points per possesion. These results are concatenated on the master.csv stored in AWS S3.
+- Then, `execute_mcmc.py` is executed, this is where the model is reran with the most up to date numbers. This produces the current rankings for today.
+- Lastly, `scrape_todays_games.py` is called to find today's games, and calculate their respective point spreads and win probabilities.
+- Cache is then refreshed and then the EC2 instance is automatically switched off to save on resources.
 
 ## Future Work
 
