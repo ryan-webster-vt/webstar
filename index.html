@@ -30,6 +30,13 @@
     .wp-low {
       color: #b30000;
     }
+
+    .change-up {
+      color: #1a7a1a;
+    }
+    .change-down {
+      color: #b30000;
+    }
   </style>
   <link rel="apple-touch-icon" sizes="180x180" href="/website-assets/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/website-assets/favicon-32x32.png">
@@ -67,61 +74,139 @@
 <script>
   // ── Rankings table ──────────────────────────────────────────────────────────
   const csvUrl = 'https://www.webstaranalytics.com/current_rankings.csv';
+  let yesterdayData = {};
 
+  // Fetch yesterday's data first
   fetch(`${csvUrl}?t=${Date.now()}`, { cache: 'no-store' })
-    .then(response => {
-      const lastModified = response.headers.get('Last-Modified');
-      if (lastModified) {
-        const date = new Date(lastModified);
-        document.getElementById('last-updated').textContent =
-          'Last updated: ' + date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-      }
-      return response.text();
-    })
+    .then(response => response.text())
     .then(text => {
       const rows = text.trim().split('\n').map(r => r.split(','));
-
       const header = rows[0].map(h => h.trim());
       const dataRows = rows.slice(1);
 
       const dateColIndex = header.findIndex(h => h.toLowerCase() === 'date');
-      if (dateColIndex === -1) {
-        console.error("No 'Date' column found");
-        return;
-      }
+      const teamColIndex = header.findIndex(h => h.toLowerCase() === 'team');
+      const rankColIndex = header.findIndex(h => h.toLowerCase() === 'rank');
+
+      if (dateColIndex === -1 || teamColIndex === -1 || rankColIndex === -1) return;
 
       const normalizedDates = dataRows.map(r => normalizeDate(r[dateColIndex].trim()));
-      const maxDate = normalizedDates.reduce((a, b) => (a > b ? a : b));
+      const uniqueDates = [...new Set(normalizedDates)].sort().reverse();
 
-      const filteredRows = dataRows.filter((row, i) =>
-        normalizeDate(row[dateColIndex].trim()) === maxDate
-      );
+      // Get yesterday's data (second most recent date)
+      if (uniqueDates.length > 1) {
+        const yesterdayDate = uniqueDates[1];
+        const yesterdayRows = dataRows.filter((row, i) =>
+          normalizeDate(row[dateColIndex].trim()) === yesterdayDate
+        );
 
-      const table = document.getElementById('csvTable');
-      table.innerHTML = '';
-
-      const headerRow = document.createElement('tr');
-      header.forEach((cell, colIndex) => {
-        if (colIndex === dateColIndex) return;
-        const th = document.createElement('th');
-        th.textContent = cell;
-        th.addEventListener('click', () => sortTable(table, colIndex));
-        headerRow.appendChild(th);
-      });
-      table.appendChild(headerRow);
-
-      filteredRows.forEach(row => {
-        const tr = document.createElement('tr');
-        row.forEach((cell, colIndex) => {
-          if (colIndex === dateColIndex) return;
-          const td = document.createElement('td');
-          td.textContent = cell;
-          tr.appendChild(td);
+        yesterdayRows.forEach(row => {
+          const team = row[teamColIndex].trim();
+          const rank = row[rankColIndex].trim();
+          yesterdayData[team] = rank;
         });
-        table.appendChild(tr);
-      });
+      }
+
+      loadTodaysRankings();
     })
-    .catch(error => console.error('Error fetching CSV:', error));
+    .catch(error => console.error('Error fetching yesterday\'s data:', error));
+
+  function loadTodaysRankings() {
+    fetch(`${csvUrl}?t=${Date.now()}`, { cache: 'no-store' })
+      .then(response => {
+        const lastModified = response.headers.get('Last-Modified');
+        if (lastModified) {
+          const date = new Date(lastModified);
+          document.getElementById('last-updated').textContent =
+            'Last updated: ' + date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+        return response.text();
+      })
+      .then(text => {
+        const rows = text.trim().split('\n').map(r => r.split(','));
+
+        const header = rows[0].map(h => h.trim());
+        const dataRows = rows.slice(1);
+
+        const dateColIndex = header.findIndex(h => h.toLowerCase() === 'date');
+        const teamColIndex = header.findIndex(h => h.toLowerCase() === 'team');
+        const rankColIndex = header.findIndex(h => h.toLowerCase() === 'rank');
+
+        if (dateColIndex === -1) {
+          console.error("No 'Date' column found");
+          return;
+        }
+
+        const normalizedDates = dataRows.map(r => normalizeDate(r[dateColIndex].trim()));
+        const maxDate = normalizedDates.reduce((a, b) => (a > b ? a : b));
+
+        const filteredRows = dataRows.filter((row, i) =>
+          normalizeDate(row[dateColIndex].trim()) === maxDate
+        );
+
+        const table = document.getElementById('csvTable');
+        table.innerHTML = '';
+
+        const headerRow = document.createElement('tr');
+        header.forEach((cell, colIndex) => {
+          if (colIndex === dateColIndex) return;
+          const th = document.createElement('th');
+          th.textContent = cell;
+          th.addEventListener('click', () => sortTable(table, colIndex, teamColIndex, dateColIndex));
+          headerRow.appendChild(th);
+
+          // Insert "Change" header after Rank
+          if (colIndex === rankColIndex) {
+            const thChange = document.createElement('th');
+            thChange.textContent = 'Change';
+            thChange.style.cursor = 'pointer';
+            thChange.addEventListener('click', () => sortTable(table, colIndex, teamColIndex, dateColIndex, true));
+            headerRow.appendChild(thChange);
+          }
+        });
+        table.appendChild(headerRow);
+
+        filteredRows.forEach(row => {
+          const tr = document.createElement('tr');
+          const team = row[teamColIndex]?.trim();
+          
+          row.forEach((cell, colIndex) => {
+            if (colIndex === dateColIndex) return;
+
+            const td = document.createElement('td');
+            td.textContent = cell;
+            tr.appendChild(td);
+
+            // Insert Change column after Rank
+            if (colIndex === rankColIndex && team) {
+              const tdChange = document.createElement('td');
+              const currentRank = parseInt(cell, 10);
+              const previousRank = yesterdayData[team];
+
+              if (previousRank) {
+                const prevRankNum = parseInt(previousRank, 10);
+                const changValue = prevRankNum - currentRank;
+                
+                if (changValue > 0) {
+                  tdChange.textContent = `↑${changValue}`;
+                  tdChange.className = 'change-up';
+                } else if (changValue < 0) {
+                  tdChange.textContent = `↓${Math.abs(changValue)}`;
+                  tdChange.className = 'change-down';
+                } else {
+                  tdChange.textContent = '—';
+                }
+              } else {
+                tdChange.textContent = '—';
+              }
+              tr.appendChild(tdChange);
+            }
+          });
+          table.appendChild(tr);
+        });
+      })
+      .catch(error => console.error('Error fetching CSV:', error));
+  }
 
   // ── Today's Games table ─────────────────────────────────────────────────────
   const gamesUrl = 'https://www.webstaranalytics.com/todays_games.csv';
@@ -286,13 +371,10 @@
 
   /**
    * Convert a time string to Eastern Time.
-   * Handles formats like "7:00 PM ET", "7:00 PM CT", "19:00", "7:00 PM", etc.
-   * Returns { displayTime: "7:00 PM ET", sortMinutes: 1140 }
    */
   function convertToET(timeStr) {
     if (!timeStr || timeStr === '—') return { displayTime: timeStr, sortMinutes: Infinity };
 
-    // Timezone offset from ET (hours to ADD to convert to ET)
     const tzOffsets = {
       'ET': 0, 'EST': 0, 'EDT': 0,
       'CT': 1, 'CST': 1, 'CDT': 1,
@@ -300,7 +382,6 @@
       'PT': 3, 'PST': 3, 'PDT': 3,
     };
 
-    // Match patterns like "7:00 PM CT" or "19:00 CT" or "7:00 PM" or "7:00"
     const match = timeStr.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?\s*([A-Z]{2,3})?$/i);
     if (!match) return { displayTime: timeStr, sortMinutes: Infinity };
 
@@ -309,21 +390,17 @@
     const ampm = match[3] ? match[3].toUpperCase() : null;
     const tz = match[4] ? match[4].toUpperCase() : 'ET';
 
-    // Convert 12-hour to 24-hour
     if (ampm === 'PM' && hours !== 12) hours += 12;
     if (ampm === 'AM' && hours === 12) hours = 0;
 
-    // Apply offset to convert to ET
     const offset = tzOffsets[tz] !== undefined ? tzOffsets[tz] : 0;
     let totalMinutes = hours * 60 + minutes + offset * 60;
 
-    // Handle day wrap
     totalMinutes = ((totalMinutes % 1440) + 1440) % 1440;
 
     const etHours24 = Math.floor(totalMinutes / 60);
     const etMinutes = totalMinutes % 60;
 
-    // Format back to 12-hour with AM/PM
     let displayHours = etHours24 % 12;
     if (displayHours === 0) displayHours = 12;
     const displayAmPm = etHours24 >= 12 ? 'PM' : 'AM';
@@ -339,7 +416,7 @@
     return date.toISOString().split('T')[0];
   }
 
-  function sortTable(table, colIndex) {
+  function sortTable(table, colIndex, teamColIndex, dateColIndex, isChangeCol = false) {
     const rowsArray = Array.from(table.rows).slice(1);
     const isNumeric = !isNaN(rowsArray[0].cells[colIndex].textContent);
 

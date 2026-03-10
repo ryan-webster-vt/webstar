@@ -1,6 +1,6 @@
 import logging
 from zoneinfo import ZoneInfo
-from datetime import datetime, time
+from datetime import datetime, time, timezone
 from dotenv import load_dotenv
 import boto3
 import os
@@ -52,7 +52,7 @@ def main():
             DistributionId=os.environ['CF_DIST_ID'],
             InvalidationBatch={
                 'Paths': {'Quantity': 1, 'Items': ['/*']},
-                'CallerReference': f"pipeline-{datetime.now(datetime.timezone.utc).date()}"
+                'CallerReference': f"pipeline-{datetime.now(timezone.utc).isoformat()}"
             }
         )
 
