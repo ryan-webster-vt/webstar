@@ -28,6 +28,10 @@ def scrape_games():
     today = datetime.now(ZoneInfo("America/New_York"))
     todays_games_ids = s.get_game_ids(date=today)
 
+    # Abrupt if no games found
+    if len(todays_games_ids) == 0:
+        return None
+    
     games = []
 
     for i, game_id in enumerate(todays_games_ids, start=1):
@@ -89,7 +93,14 @@ def calculate_spreads_wp(schedule):
     return schedule
 
 def main():
-    schedule = scrape_games()
+    try:
+        schedule = scrape_games()
+        if schedule is None:
+                return
+    except Exception as e:
+        print(f"Error scraping games: {e}")
+        return
+    
     final_schedule = calculate_spreads_wp(schedule)
 
     # Save data onto S3

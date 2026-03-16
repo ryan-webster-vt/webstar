@@ -103,6 +103,11 @@ def main():
 
     # Scrape/clean data
     box_scores, info_list = scrape_data()
+
+    # If no games, abrupt script
+    if len(box_scores) == 0:
+        return
+
     matchup_df = build_matchup_table(box_scores, info_list)
 
     # Concat data to existing master file
